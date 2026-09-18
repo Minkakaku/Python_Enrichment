@@ -1,22 +1,27 @@
 # R-Python-scores-enrichment-workflow-template
 
-基因集打分、功能富集、dotplot、箱线图和小提琴图代码素材模板。
+独立评分与富集分析仓库。每个分析点是一个可直接运行的根目录完整脚本：
 
-## 主要代码
+- module_score_workflow.py：注释后 h5ad + GMT，计算 Scanpy module score，并按样本×细胞类型比较 CON/EXP。
+- gsva_workflow.R：注释后 Seurat RDS + GMT，先汇总样本×细胞类型表达，再运行 GSVA。
+- enrichment_workflow.R：差异表达 CSV，分开进行 Up/Down GO/KEGG ORA，并用全部可检验基因运行 preranked GSEA。
 
-- `sc_score.py`、`score/sc_score.py`：Scanpy 基因集打分代码。
-- `score/sc_score_boxplot.R`、`score/sc_score_violin.R`：打分结果绘图。
-- `functionenrichment.py`：GO/KEGG 等功能富集。
-- `sc_dotplot.py`：单细胞 dotplot。
-- `score/report.rmd`：结果报告模板。
-- `platform_wrappers/`：原平台启动代码。
+## Module score
 
-## 使用前注意
+    python module_score_workflow.py --input annotated.h5ad --gmt signatures.gmt --output results/module_score --sample-col sample --group-col group --celltype-col cell_type
 
-部分 Python 文件依赖 Streamlit 和内部模块，并含平台临时目录。新项目应提取其中的分析函数，按项目 `results/` 规范输出 PNG/PDF 和支撑表格，不直接运行平台页面代码。
+## GSVA
 
-原始副本保存在 `../R-Python-bioinformatics-code-archive/legacy/original/08_scores_enrichment/`。
+    Rscript gsva_workflow.R --input annotated.rds --gmt signatures.gmt --output results/gsva --sample-col sample --group-col group --celltype-col cell_type
 
-## 其他人员来源代码
+两种评分的组间统计均使用生物学样本汇总，不把单个细胞当作重复。delta_EXP_minus_CON > 0 表示 EXP 高。
 
-`source_catalog/` 收录 294 份打分、富集和可视化语义副本；`SOURCE_CATALOG.tsv` 保留场景、workflow role、owner 和哈希。正式项目仍应按样本层面统计、PNG/PDF 成对输出及支撑表格规范重新组合代码。
+## ORA 与 GSEA
+
+    Rscript enrichment_workflow.R --input differential_expression.csv --output results/enrichment --species human --gene-col gene --logfc-col avg_log2FC --pvalue-col p_val --padj-col p_val_adj
+
+ORA 按 adjusted P 和 logFC 阈值拆分 Up/Down，使用全部可映射基因作为背景。GSEA 对全部可检验基因排序，不先按 DEG 显著性过滤。正 NES 表示 EXP 端富集，负 NES 表示 CON 端富集。
+
+评分和富集都是转录层面的相对证据，不直接等于蛋白活性或代谢通量。旧 Streamlit、固定路径和细胞级伪重复脚本原样保存在 legacy/original/。
+
+方法依据：GSVA（PMID: 23323831）、clusterProfiler（PMID: 22455463、34557778）及 Seurat/Scanpy 官方 module-score 文档。
