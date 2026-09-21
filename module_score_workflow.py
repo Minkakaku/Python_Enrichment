@@ -19,8 +19,7 @@ from statsmodels.stats.multitest import multipletests
 
 GROUP_COLORS = {"CON": "#72b1b9", "EXP": "#f6ae00"}
 FEATURE_COLORS = [
-    "#FFEFD5", "#E6E6FA", "#87CEFA", "#6495ED",
-    "#4169E1", "#0000CD", "#000080",
+    "#FFF5F0", "#F39B7F", "#E64B35", "#7A0019",
 ]
 
 
@@ -45,12 +44,12 @@ def infer_group(sample: str) -> str | None:
     return None
 
 
-# 功能：把图同时保存为 300 dpi PNG 和矢量 PDF。
+# 功能：把图同时保存为 600 dpi PNG 和矢量 PDF。
 def save_figure(figure: plt.Figure, stem: Path, width: float, height: float) -> None:
     figure.set_size_inches(width, height)
     figure.tight_layout()
     figure.savefig(stem.with_suffix(".pdf"), bbox_inches="tight")
-    figure.savefig(stem.with_suffix(".png"), dpi=300, bbox_inches="tight")
+    figure.savefig(stem.with_suffix(".png"), dpi=600, bbox_inches="tight")
     plt.close(figure)
 
 
@@ -149,7 +148,7 @@ def plot_umap_scores(adata: ad.AnnData, score_columns: list[str], output: Path) 
         figure, axis = plt.subplots()
         points = axis.scatter(
             coordinates[:, 0], coordinates[:, 1], c=values, s=2,
-            cmap=cmap, vmin=lower, vmax=upper, rasterized=True,
+            cmap=cmap, vmin=lower, vmax=upper, rasterized=False,
         )
         axis.set_title(score.removeprefix("score_"))
         axis.set_aspect("equal")

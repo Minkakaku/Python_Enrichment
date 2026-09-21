@@ -19,10 +19,11 @@ infer_group <- function(samples) {
   group
 }
 
-# 功能：把 ggplot 同时保存为 PDF 和 300 dpi PNG。
+# 功能：把 ggplot 同时保存为 PDF 和 600 dpi PNG。
 save_plot <- function(plot, stem, width = 10, height = 7) {
+  plot <- plot + ggplot2::labs(subtitle = NULL) + ggplot2::theme(plot.subtitle = ggplot2::element_blank())
   ggplot2::ggsave(paste0(stem, ".pdf"), plot, width = width, height = height)
-  ggplot2::ggsave(paste0(stem, ".png"), plot, width = width, height = height, dpi = 300)
+  ggplot2::ggsave(paste0(stem, ".png"), plot, width = width, height = height, dpi = 600)
 }
 
 # 功能：读取 GMT 并返回命名基因集列表。
@@ -121,11 +122,11 @@ plot_score_boxplots <- function(score_long, statistics, output_dir, top_n) {
 # 功能：绘制 EXP-CON 通路差值热图；红色表示 EXP 高，蓝色表示 CON 高。
 plot_delta_heatmap <- function(statistics, output_dir) {
   matrix <- xtabs(delta_EXP_minus_CON ~ cell_type + pathway, statistics)
-  colors <- grDevices::colorRampPalette(c("#2166AC", "white", "#B2182B"))(101)
+  colors <- grDevices::colorRampPalette(c("#3C5488", "white", "#E64B35"))(101)
   grDevices::pdf(file.path(output_dir, "GSVA_delta_EXP_minus_CON_heatmap.pdf"), width = 11, height = 8)
   pheatmap::pheatmap(matrix, color = colors, border_color = NA)
   grDevices::dev.off()
-  grDevices::png(file.path(output_dir, "GSVA_delta_EXP_minus_CON_heatmap.png"), width = 11, height = 8, units = "in", res = 300)
+  grDevices::png(file.path(output_dir, "GSVA_delta_EXP_minus_CON_heatmap.png"), width = 11, height = 8, units = "in", res = 600)
   pheatmap::pheatmap(matrix, color = colors, border_color = NA)
   grDevices::dev.off()
 }

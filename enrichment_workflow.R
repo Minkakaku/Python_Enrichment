@@ -91,7 +91,7 @@ plot_diverging_ora <- function(results, database, output_dir, top_n = 10L) {
     ggplot2::geom_col(width = 0.7, alpha = 0.9) +
     ggplot2::geom_hline(yintercept = 0, linewidth = 0.35) +
     ggplot2::coord_flip() +
-    ggplot2::scale_fill_manual(values = c(Up = "#CD5C5C", Down = "#5F9EA0")) +
+    ggplot2::scale_fill_manual(values = c(Up = "#E64B35", Down = "#3C5488")) +
     ggplot2::labs(x = NULL, y = "Signed -log10(adjusted P)", fill = NULL) +
     ggplot2::theme_minimal(base_size = 12) +
     ggplot2::theme(panel.grid = ggplot2::element_blank(), axis.line.x = ggplot2::element_line(color = "black"))
