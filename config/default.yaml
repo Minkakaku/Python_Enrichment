@@ -1,0 +1,5 @@
+methods:
+  module_score:
+    sample-col: sample
+    group-col: group
+    celltype-col: cell_type

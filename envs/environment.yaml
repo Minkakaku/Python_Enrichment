@@ -1,0 +1,13 @@
+name: python-enrichment
+channels:
+- conda-forge
+- bioconda
+dependencies:
+- python=3.11
+- scanpy>=1.10
+- pandas>=2
+- matplotlib>=3.8
+- seaborn
+- scipy
+- statsmodels
+- pyyaml

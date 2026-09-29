@@ -199,12 +199,15 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--ctrl-size", type=int, default=50)
     parser.add_argument("--n-bins", type=int, default=25)
     parser.add_argument("--seed", type=int, default=1001)
+    parser.add_argument("--object-dir", type=Path, default=None)
     return parser
 
 
 # 功能：串联评分、样本级汇总、组间比较、绘图和结果说明。
 def main() -> None:
     args = build_parser().parse_args()
+    args.object_dir = args.object_dir or Path("data/processed/module_score")
+    args.object_dir.mkdir(parents=True, exist_ok=True)
     args.output.mkdir(parents=True, exist_ok=True)
     adata = ad.read_h5ad(args.input)
     if args.use_raw:
@@ -224,7 +227,7 @@ def main() -> None:
         adata, read_gmt(args.gmt), args.ctrl_size, args.n_bins, args.seed
     )
     mapping.to_csv(args.output / "gene_set_mapping_summary.csv", index=False)
-    adata.write_h5ad(args.output / "module_score_annotated.h5ad")
+    adata.write_h5ad(args.object_dir / "module_score_annotated.h5ad")
     summary = summarize_by_sample(
         adata, score_columns, args.sample_col, args.group_col, args.celltype_col
     )
