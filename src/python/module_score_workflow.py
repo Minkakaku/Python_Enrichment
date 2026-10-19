@@ -13,12 +13,15 @@ import numpy as np
 import pandas as pd
 import scanpy as sc
 import seaborn as sns
+import yaml
 from matplotlib.colors import LinearSegmentedColormap
 from scipy.stats import mannwhitneyu
 from statsmodels.stats.multitest import multipletests
 
-GROUP_COLORS = {"CON": "#72b1b9", "EXP": "#f6ae00"}
-FEATURE_COLORS = [
+_palette_path = Path("config/palette.yaml")
+_project_palette = (yaml.safe_load(_palette_path.read_text(encoding="utf-8")) or {}) if _palette_path.exists() else {}
+GROUP_COLORS = {"CON": "#E64B35", "EXP": "#4DBBD5", **(_project_palette.get("groups") or {})}
+FEATURE_COLORS = _project_palette.get("sequential") or [
     "#FFF5F0", "#F39B7F", "#E64B35", "#7A0019",
 ]
 
